@@ -15,9 +15,15 @@ To use it, simply pass in a Proc as `mini_magick_opts`:
 
 ```ruby
 # app/uploaders/video_uploader.rb
+require 'mini_exiftool' # you need to add this gem, here is the info https://github.com/janfri/mini_exiftool
 
-mini_magick_proc = Proc.new { |image|
-  image.rotate "90" # rotates the image 90 degrees clockwise
+mini_magick_proc = Proc.new { |image,source|
+  #now the source is passed, you can use here tools as mini_exiftool to check the rotation of the video, this to rotate the thumb only if is a protrait video
+  movie_exifi = MiniExiftool.new(source)
+  if movie_exifi.rotation == 90 # if was take in portrait, you rate it the image
+    image.rotate "90"
+  end
+  image
 }
 
 version :preview_image do
